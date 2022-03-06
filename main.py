@@ -14,7 +14,7 @@ module_handle = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_re
 detector = hub.load(module_handle).signatures["default"]
 
 images = os.listdir("input")
-for i, x in enumerate(sorted(images)):
+for i, x in enumerate(images):
     image_path = f"input/{x}"
     left, right, top, bottom, im_width, im_height = run_detector(detector, image_path)
 
@@ -25,5 +25,3 @@ for i, x in enumerate(sorted(images)):
     
     im = Image.open(f"temp/{x}")
     im.resize((im_width, im_height)).save(f"output/{x}")
-    
-    if i == 2: break
