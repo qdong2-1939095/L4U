@@ -21,7 +21,7 @@ def convert_frames_to_video(pathIn,pathOut,fps):
         #inserting the frames into an image array
         frame_array.append(img)
 
-    out = cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
+    out = cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*"DIVX"), fps, size)
 
     for i in range(len(frame_array)):
         # writing to a image array
@@ -29,9 +29,9 @@ def convert_frames_to_video(pathIn,pathOut,fps):
     out.release()
 
 def main():
-    pathIn= './input/'
-    pathOut = 'video.avi'
-    fps = 30.0
+    pathIn= "output/"
+    pathOut = "centered.mp4"
+    fps = 30
     convert_frames_to_video(pathIn, pathOut, fps)
 
 if __name__=="__main__":
