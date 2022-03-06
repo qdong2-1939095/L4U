@@ -33,16 +33,8 @@ def run_detector(detector, path):
     ymin, xmin, ymax, xmax = tuple(boxes[i])
     im_width, im_height = image.size
     (left, right, top, bottom) = (xmin * im_width, xmax * im_width, ymin * im_height, ymax * im_height)
-
-    draw = ImageDraw.Draw(image)
-    draw.line([(left, top), (left, bottom), (right, bottom), (right, top), (left, top)], \
-            width=4, fill=128)
-    display_image(image)
-
-
-if __name__ == "__main__":
-    image_path = "input/frame0.jpg"
-
-    module_handle = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"
-    detector = hub.load(module_handle).signatures["default"]
-    run_detector(detector, image_path)
+    return left, right, top, bottom, im_width, im_height
+    # draw = ImageDraw.Draw(image)
+    # draw.line([(left, top), (left, bottom), (right, bottom), (right, top), (left, top)], \
+    #         width=4, fill=128)
+    # display_image(image)
