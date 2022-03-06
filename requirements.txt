@@ -1,6 +1,5 @@
 tensorflow
 tensorflow_hub
 matplotlib
-six
 pillow
 opencv-python
