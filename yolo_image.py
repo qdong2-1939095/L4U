@@ -4,6 +4,8 @@ import argparse
 import time
 import cv2
 import os
+from resize import resize_image
+from PIL import Image
 
 CONFIDENCE = 0.5
 THRESHOLD = 0.3
@@ -13,7 +15,7 @@ COLORS = None
 def parse_arguments():
     # construct the argument parse and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--image", required=True,
+    ap.add_argument("-i", "--image",
         help="path to input image")
     ap.add_argument("-y", "--yolo", required=True,
         help="base path to YOLO directory")
@@ -37,7 +39,7 @@ def load_yolo(yolo_dir):
     weightsPath = os.path.sep.join([yolo_dir, "yolov3.weights"])
     configPath = os.path.sep.join([yolo_dir, "yolov3.cfg"])
     # load our YOLO object detector trained on COCO dataset (80 classes)
-    print("[INFO] loading YOLO from disk...")
+    # print("[INFO] loading YOLO from disk...")
     net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
     return net
 
@@ -55,7 +57,7 @@ def label_image(image, net):
     layerOutputs = net.forward(ln)
     end = time.time()
     # show timing information on YOLO
-    print("[INFO] YOLO took {:.6f} seconds".format(end - start))
+    # print("[INFO] YOLO took {:.6f} seconds".format(end - start))
     return layerOutputs
 
 def draw_box(image, layerOutputs):
@@ -65,7 +67,7 @@ def draw_box(image, layerOutputs):
     confidences = []
     classIDs = []
     (H, W) = image.shape[:2]    # spatial dimensions
-    print("image: ", H, W)
+    # print("image: ", H, W)
 
     # loop over each of the layer outputs
     for output in layerOutputs:
@@ -85,7 +87,7 @@ def draw_box(image, layerOutputs):
                 # box followed by the boxes' width and height
                 box = detection[0:4] * np.array([W, H, W, H])
                 (centerX, centerY, width, height) = box.astype("int")
-                print((centerX, centerY, width, height))
+                # print((centerX, centerY, width, height))
                 # use the center (x, y)-coordinates to derive the top and
                 # and left corner of the bounding box
                 x = int(centerX - (width / 2))
@@ -113,22 +115,42 @@ def draw_box(image, layerOutputs):
             text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
             cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX,
                 0.5, color, 2)
-            print(LABELS[classIDs[i]], confidences[i])
-    # show the output image
-    cv2.imwrite("labeled.jpg", image)
-    # cv2.imshow("Image", image)
-    cv2.waitKey(0)
+            # print(LABELS[classIDs[i]], confidences[i])
+            if LABELS[classIDs[i]] == 'person':
+                return (x, y, w, h, W, H)
+    # # show the output image
+    # cv2.imwrite("labeled.jpg", image)
+    # # cv2.imshow("Image", image)
+    # cv2.waitKey(0)
+    print("    no person detected!")
+    return None, None, None, None, None, None
+    
 
 def main():
     args = parse_arguments()
     global CONFIDENCE, THRESHOLD
     CONFIDENCE = args["confidence"]
     THRESHOLD = args["threshold"]
-    image = cv2.imread(args["image"])   # input image
-    net = load_yolo(args["yolo"])
-    layerOutput = label_image(image, net)
-    draw_box(image, layerOutput)
-
+    for i in range(231):
+        image_path = f"input/frame{i}.jpg"
+        print("processing", image_path, "...")
+        image = cv2.imread(image_path)   # input image
+        net = load_yolo(args["yolo"])
+        layerOutput = label_image(image, net)
+        center_x, center_y, w, h, im_width, im_height = draw_box(image, layerOutput)
+        if center_x == None:
+            continue
+        left = center_x - (w - 1) / 2
+        right = center_x + (w - 1) / 2
+        top = center_y - (h - 1) / 2
+        bottom = center_y + (h - 1) / 2
+        res = resize_image(left, right, top, bottom, im_width, im_height)
+        img = Image.open(image_path)
+        cropped = img.crop((res[0], res[2], res[1], res[3]))
+        cropped.save(f"temp/frame{i}.jpg")
+        
+        im = Image.open(f"temp/frame{i}.jpg")
+        im.resize((im_width, im_height)).save(f"output/yolo_output/frame{i}.jpg")
 
 if __name__ == "__main__":
     main()
