@@ -17,7 +17,7 @@ def parse_arguments():
     ap = argparse.ArgumentParser()
     ap.add_argument("-i", "--image",
         help="path to input image")
-    ap.add_argument("-y", "--yolo", required=True,
+    ap.add_argument("-y", "--yolo", default='yolo',
         help="base path to YOLO directory")
     ap.add_argument("-c", "--confidence", type=float, default=0.5,
         help="minimum probability to filter weak detections")
@@ -60,7 +60,7 @@ def label_image(image, net):
     # print("[INFO] YOLO took {:.6f} seconds".format(end - start))
     return layerOutputs
 
-def draw_box(image, layerOutputs):
+def draw_box(image, layerOutputs, ii):
     # initialize our lists of detected bounding boxes, confidences, and
     # class IDs, respectively
     boxes = []
@@ -117,9 +117,12 @@ def draw_box(image, layerOutputs):
                 0.5, color, 2)
             # print(LABELS[classIDs[i]], confidences[i])
             if LABELS[classIDs[i]] == 'person':
+                # cv2.imwrite(f"output_ski/labeled/boxed{ii}.jpg", image)
+                # # cv2.imshow("Image", image)
+                # cv2.waitKey(0)
                 return (x, y, w, h, W, H)
     # # show the output image
-    # cv2.imwrite("labeled.jpg", image)
+    # cv2.imwrite(f"output_ski/boxed{ii}.jpg", image)
     # # cv2.imshow("Image", image)
     # cv2.waitKey(0)
     print("    no person detected!")
@@ -137,20 +140,20 @@ def main():
         image = cv2.imread(image_path)   # input image
         net = load_yolo(args["yolo"])
         layerOutput = label_image(image, net)
-        center_x, center_y, w, h, im_width, im_height = draw_box(image, layerOutput)
-        if center_x == None:
+        left_x, top_y, w, h, im_width, im_height = draw_box(image, layerOutput, i)
+        if left_x == None:
             continue
-        left = center_x - (w - 1) / 2
-        right = center_x + (w - 1) / 2
-        top = center_y - (h - 1) / 2
-        bottom = center_y + (h - 1) / 2
+        left = left_x
+        right = left_x + w
+        top = top_y
+        bottom = top_y + h
         res = resize_image(left, right, top, bottom, im_width, im_height)
         img = Image.open(image_path)
         cropped = img.crop((res[0], res[2], res[1], res[3]))
         cropped.save(f"temp/frame{i}.jpg")
         
         im = Image.open(f"temp/frame{i}.jpg")
-        im.resize((im_width, im_height)).save(f"output/yolo_output/frame{i}.jpg")
+        im.resize((im_width, im_height)).save(f"output_ski/yolo_output/frame{i}.jpg")
 
 if __name__ == "__main__":
     main()

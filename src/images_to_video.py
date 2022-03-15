@@ -9,6 +9,7 @@ def convert_frames_to_video(in_dir, out_file, fps):
     files = os.listdir(in_dir)
 
     for i in range(231):
+        if i == 212: continue
         filename = in_dir + f"frame{i}.jpg"
         #reading each files
         if not os.path.isfile(filename):
