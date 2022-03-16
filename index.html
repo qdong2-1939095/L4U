@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-	<head> 
+	<head>
 		<title> CSE455 Final Project Demo </title>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -9,9 +9,9 @@
 
 	<body style="background-color: rgb(209, 246, 255);">
 		<div id = "Header" class="round-corner">
-			<h1> CSE455 Final Project: LOVE4FELIX </h1>
+			<h1> CSE455 Final Project: LookForYou(L4U) </h1>
 		</div>
-		
+
     <div id = "Main">
       <div style="padding-top: 0px;">
         <div id = "Left" class = "section round-corner">
@@ -21,41 +21,53 @@
           </video>
         </div>
         <div id = "Member" class = "section round-corner">
-          <h4>Project Team: Qingyuan Dong, Ivy Guo, George Ma, Carlos Yu</h4>
+          <h4>Team Member: Qingyuan Dong, Ivy Guo, George Ma, Carlos Yu</h4>
         </div>
       </div>
-      
+
       <div id = "Right">
         <div id = "Tab" class = "section round-corner">
-          <h3>Problem Setup:</h3>
-          <p> This is Keith Price's number one Fan Site! He is a good leader, wins games, throws awesome passes, hits his targets, can run when he needs to, and has a cheesy smile. Huskies have been on point this season with a starting record of 4-0.
-            <br />
-            <br />
-            <span id="bow"><a href="https://www.Facebook.com">Link</a></span>
+          <h3>Problem Description:</h3>
+          <p> We want to simplify the production flow of a special effect that used to be operated on Pr and AE, which is tracking one character and always fixing it in the middle of the screen. This special effect usually applies in motion videos, such as skiing video, dance video, surfing video, etc. To make that effect, editors need to set many keyframes and adjust screen size all the time in Pr, which need much knowledge about the editing software and spend much time on editing. Our program can let users input an original video, then directly generates an edited video with that special effect.
           </p>
         </div>
         <div id = "Tab" class = "section round-corner">
-          <h3>Dataset/Video:</h3>
-          <p> We used pre-trained.
+          <h3>Data used:</h3>
+          <p> We used pre-trained data of YOLOv3 and TensorFlow.
             <br />
             <br />
-            <span id="bow"><a href="https://www.Facebook.com">Link</a></span>
-            <span id="bow"><a href="https://www.youtube.com/watch?v=73QUkVvhKTc&t=184s">Video Link</a></span>
+            Unprocessed video:
+            <span id="bow"><a href="https://www.youtube.com/watch?v=73QUkVvhKTc&t=184s">Link</a></span>
           </p>
         </div>
         <div id = "Tab" class = "section round-corner">
           <h3>Techniques:</h3>
-          <p> We trained an object detector with <a href="https://www.tensorflow.org/hub/tutorials/object_detection">TensorFlow Object Detection module</a> and <a href="https://pjreddie.com/darknet/yolo/">YOLOv3</a> to identify and locate objects in an image or video.
-              After we get the location of the object along with its label, we resized each frame of a video so that the object is centered.
+          <p> We trained an object detector with <a href="https://www.tensorflow.org/hub/tutorials/object_detection">TensorFlow Object Detection module</a> and <a href="https://pjreddie.com/darknet/yolo/">YOLOv3</a> sprarately to identify and locate objects in an image or video.
+              After we get the location of the object along with its label, we proportionally resized each frame of a video so that the object is centered.
             <br />
             <br />
-            <span id="bow"><a href="https://github.com/qdong2-1939095/L4U">GitHub</a></span>
+            Github repo:
+            <span id="bow"><a href="https://github.com/qdong2-1939095/L4U">Link</a></span>
+          </p>
+        </div>
+        <div id = "Tab" class = "section round-corner">
+          <h3>Result & Discussion:</h3>
+          <p>
+            Processed video:
+            <span id="bow"><a href="https://github.com/qdong2-1939095/L4U/blob/main/assets/centered.mp4">Link</a></span>
+            <br />
+            <ul>
+              Discussion:
+              <li>Weakness: The broder of process video will get some vibration if the input video has a low frame rate. (120fps video gets much smoother ouput than 30fps video)</li>
+              <li>Solution: centrlize each frame based on the average data of adjacent 5 frames </li>
+              <br />
+            </ul>
           </p>
         </div>
       </div>
-      
+
     </div>
-		
+
 		<div id = "Footer">
 
 		</div>
